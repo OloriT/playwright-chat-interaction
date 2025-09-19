@@ -18,11 +18,11 @@ test("robust two-user chat test", async () => {
 
   // Launch side by side
   const browserUser1 = await chromium.launch({
-    headless: true,
+    headless: false,
     args: [`--window-size=${windowWidth},${windowHeight}`, `--window-position=0,0`],
   })
   const browserUser2 = await chromium.launch({
-    headless: true,
+    headless: false,
     args: [`--window-size=${windowWidth},${windowHeight}`, `--window-position=${windowWidth + 50},0`],
   })
 
@@ -43,13 +43,13 @@ test("robust two-user chat test", async () => {
     // Set User 1 name
     await page1.fill('input[placeholder="Name"]', user1Name)
     await page1.press('input[placeholder="Name"]', "Enter")
-    await page1.waitForTimeout(2000)
+    await page1.waitForTimeout(5000)
 
     // Setup User 2
     await page2.goto(`https://tlk.io/${channelName}`)
     await page2.fill('input[placeholder="Name"]', user2Name)
     await page2.press('input[placeholder="Name"]', "Enter")
-    await page2.waitForTimeout(2000)
+    await page2.waitForTimeout(5000)
 
     // Verify both users are connected
     await expect(page1.locator("#user-counter")).toHaveText("2")
@@ -71,16 +71,16 @@ test("robust two-user chat test", async () => {
     for (let i = 0; i < conversations.length; i++) {
       const { user1: msg1, user2: msg2 } = conversations[i]
 
-      console.log(`[v0] Starting conversation round ${i + 1}`)
+      console.log(`[starting chat] Starting conversation round ${i + 1}`)
 
       // User 1 initiates conversation
       await page1.fill("#message_body", msg1)
       await page1.press("#message_body", "Enter")
-      console.log(`[v0] ${user1Name} sent: ${msg1}`)
+      console.log(`[user1] ${user1Name} sent: ${msg1}`)
 
       // Wait for User 2 to receive the message
       await page2.waitForFunction((msg) => document.body.textContent.includes(msg), msg1, { timeout: 10000 })
-      console.log(`[v0] ${user2Name} received ${user1Name}'s message`)
+      console.log(`[user2 receives] ${user2Name} received ${user1Name}'s message`)
 
       // Add realistic delay before User 2 responds
       await page2.waitForTimeout(faker.number.int({ min: 1000, max: 3000 }))
@@ -88,16 +88,16 @@ test("robust two-user chat test", async () => {
       // User 2 responds to User 1's message
       await page2.fill("#message_body", msg2)
       await page2.press("#message_body", "Enter")
-      console.log(`[v0] ${user2Name} replied: ${msg2}`)
+      console.log(`[user2 replies] ${user2Name} replied: ${msg2}`)
 
       // Wait for User 1 to receive User 2's response
       await page1.waitForFunction((msg) => document.body.textContent.includes(msg), msg2, { timeout: 10000 })
-      console.log(`[v0] ${user1Name} received ${user2Name}'s reply`)
+      console.log(`[user1 receieves] ${user1Name} received ${user2Name}'s reply`)
 
       // Add realistic delay before next conversation
       await page1.waitForTimeout(faker.number.int({ min: 500, max: 2000 }))
 
-      console.log(`[v0] Conversation round ${i + 1} completed successfully`)
+      console.log(`Conversation round ${i + 1} completed successfully`)
     }
 
     const allMessages = conversations.flatMap((conv) => [conv.user1, conv.user2])
@@ -107,7 +107,7 @@ test("robust two-user chat test", async () => {
       await expect(page2.locator("body")).toContainText(message)
     }
 
-    console.log(`[v0] All ${conversations.length * 2} messages verified on both pages`)
+    console.log(`[Chat Ended] All ${conversations.length * 2} messages verified on both pages`)
   } finally {
     await browserUser1.close()
     await browserUser2.close()
