@@ -18,11 +18,11 @@ test("robust two-user chat test", async () => {
 
   // Launch side by side
   const browserUser1 = await chromium.launch({
-    headless: false,
+    headless: true,
     args: [`--window-size=${windowWidth},${windowHeight}`, `--window-position=0,0`],
   })
   const browserUser2 = await chromium.launch({
-    headless: false,
+    headless: true,
     args: [`--window-size=${windowWidth},${windowHeight}`, `--window-position=${windowWidth + 50},0`],
   })
 
