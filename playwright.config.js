@@ -38,7 +38,7 @@ export default defineConfig({
     //Optional: Set timeout for actions like click, fill, etc.
     actionTimeout: 30000, // 30 seconds for other actions
 
-    headless: false
+    headless: true
   },
 
   /* Configure projects for major browsers */
