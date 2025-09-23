@@ -1,7 +1,7 @@
 import { test, expect, chromium } from "@playwright/test"
 import { faker } from "@faker-js/faker"
 
-test("robust two-user chat test", async () => {
+test("Interactive Chat btw two-users", async () => {
   const channelName = `test-${Date.now()}`
 
   // Generate unique realistic names
@@ -82,7 +82,7 @@ test("robust two-user chat test", async () => {
       await page2.waitForFunction((msg) => document.body.textContent.includes(msg), msg1, { timeout: 10000 })
       console.log(`[user2 receives] ${user2Name} received ${user1Name}'s message`)
 
-      // Add realistic delay before User 2 responds
+      // Add delay before User 2 responds
       await page2.waitForTimeout(faker.number.int({ min: 1000, max: 3000 }))
 
       // User 2 responds to User 1's message
@@ -94,8 +94,8 @@ test("robust two-user chat test", async () => {
       await page1.waitForFunction((msg) => document.body.textContent.includes(msg), msg2, { timeout: 10000 })
       console.log(`[user1 receieves] ${user1Name} received ${user2Name}'s reply`)
 
-      // Add realistic delay before next conversation
-      await page1.waitForTimeout(faker.number.int({ min: 500, max: 2000 }))
+      // Add delay
+      await page1.waitForTimeout(faker.number.int({ min: 500, max: 3000 }))
 
       console.log(`Conversation round ${i + 1} completed successfully`)
     }
